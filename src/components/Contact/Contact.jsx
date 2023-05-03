@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Contact.css";
+import axios from "axios";
 
 function Contact() {
   const [name, setname] = useState("");
@@ -9,6 +10,38 @@ function Contact() {
 
   const submitHandler = (e) => {
     e.preventDefault();
+
+    var from_name = name + " " + phone + " " + email;
+    var data_post = {
+      service_id: "service_r3nps8l",
+      template_id: "template_lcdu4un",
+      user_id: "lcdsepcPdznec56GD",
+
+      template_params: {
+        from_name: from_name,
+        to_name: "Jasbir",
+        message: message,
+      },
+    };
+
+    console.log(data_post);
+
+    axios
+      .post("https://api.emailjs.com/api/v1.0/email/send", data_post, {
+        contentType: "application/json",
+      })
+
+      .then((response) => {
+        console.log(response.status);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    setemail("");
+    setmessage("");
+    setname("");
+    setphone("");
   };
 
   return (
@@ -22,22 +55,25 @@ function Contact() {
             setname(e.target.value);
           }}
           placeholder="Name"
+          value={name}
         />
         <input
           type="email"
           name=""
           onChange={(e) => {
-            setname(e.target.value);
+            setemail(e.target.value);
           }}
           placeholder="Email"
+          value={email}
         />
         <input
           type="tel"
           name=""
           onChange={(e) => {
-            setname(e.target.value);
+            setphone(e.target.value);
           }}
           placeholder="Phone"
+          value={phone}
         />
         <textarea
           type="textarea"
@@ -45,6 +81,10 @@ function Contact() {
           placeholder="Message"
           rows={5}
           cols={50}
+          value={message}
+          onChange={(e) => {
+            setmessage(e.target.value);
+          }}
         />
         <button onClick={submitHandler}>Submit</button>
       </form>
